@@ -4,6 +4,113 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width">
 	<title>webpack-poject</title>
+	<style>
+
+	html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6 {
+	  margin: 0;
+	  padding: 0;
+	}
+
+	h1,h2,h3,h4,h5,h6 {
+	  font-size: 100%;
+	  font-weight: normal;
+	}
+	html {
+	  box-sizing: border-box;
+	}
+	*{
+	  -webkit-user-select: none;
+	  -webkit-touch-callout: none;
+	  -webkit-tap-highlight-color: transparent;
+	  -webkit-overflow-scrolling: touch;
+	}
+	*, *:before, *:after {
+	  box-sizing: inherit;
+	}
+	body {
+	    -webkit-text-size-adjust:none;
+	    font-family:"微软雅黑", Arial, Helvetica, sans-serif;
+	    color:#333;
+	    font-size:14px;
+	    display:-webkit-box;
+	    -webkit-box-orient:vertical;
+	    -webkit-box-align:stretch;
+	    background-color:#fff
+	}
+
+	section, nav, article, aside, hgroup, header, footer {
+	    display:block
+	}
+	/* 清除iphone 内核样式 */
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"],
+	button {
+	 -webkit-appearance: none;
+	 border-radius: 0;
+	}
+	input, textarea, select, button, table {
+	    font-size:inherit;
+	    font-family:inherit;
+	    line-height:inherit;
+	    margin: 0;
+	    border: 0;
+	    box-sizing: border-box;
+	}
+	table {
+	  border-collapse: collapse;
+	  border-spacing: 0;
+	}
+	td,th {
+	  padding: 0;
+	  text-align: left;
+	}
+	img, fieldset {
+	    border:0
+	}
+	ul, ol {
+	    list-style:none
+	}
+	i, em, address {
+	    font-style:normal
+	}
+	a {
+	    color:inherit;
+	    text-decoration:none
+	}
+	hr,legend{
+	    display:none
+	}
+	img,embed,object,audio,video {
+	  height: auto;
+	  max-width: 100%;
+	}
+	iframe {
+	    width:0;
+	    height:0;
+	    line-height:0;
+	    overflow:hidden;
+	    display: none;
+	}
+  #btn{
+  	height:24px;
+		width: 70px;
+		background-color: #eee;
+		margin-top: 10px;
+  }
+	#stage{
+		height: 200px;
+		width: 200px;
+		background-color: red
+	}
+	.clear,.sure{
+		position: absolute;
+	   bottom: 20px;
+	}
+	.sure{
+		right: 0
+	}
+	</style>
 	<script type="text/javascript">
 !function(e,t){function n(){var t=o.getBoundingClientRect().width/10;o.style.fontSize=t+"px",d.rem=e.rem=t}var i=null,r=e.document,o=r.documentElement,a=0,d=t.flexible||(t.flexible={}),s=e.navigator.appVersion.match(/iphone/gi),m=e.navigator.appVersion.match(/UCBrowser/gi),p=e.devicePixelRatio;a=s?p>=3&&(!a||a>=3)?3:p>=2&&(!a||a>=2)?2:1:1,o.setAttribute("data-dpr",a),"complete"===r.readyState?r.body.style.fontSize="12px":r.addEventListener("DOMContentLoaded",function(){r.body.style.fontSize="12px"},!1);var c="onorientationchange"in window?"orientationchange":"resize";if(e.addEventListener(c,function(){clearTimeout(i),i=setTimeout(n(),300)},!1),e.addEventListener("pageshow",function(t){e.persisted&&(clearTimeout(i),i=setTimeout(n(),300))},!1),n(),d.dpr=e.dpr=a,d.refreshRem=n,d.rem2px=function(e){var t=parseFloat(e)*this.rem;return"string"==typeof e&&e.match(/rem$/)&&(t+="px"),t},d.px2rem=function(e){var t=parseFloat(e)/this.rem;return"string"==typeof e&&e.match(/px$/)&&(t+="rem"),t},s&&!m){var l="notHairlines",u=navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);parseInt(u[1],10)>=8&&(l="hairlines"),document.documentElement.classList.add(l)}}(window,window.lib||(window.lib={}));
 	</script>
@@ -11,14 +118,19 @@
 </head>
 <body>
 	<input id="up-img" type="file" accept="image/png,image/jpeg,image/gif" />
-	<div id="app"></div>
+	<div id="before"></div>
+	<button id="btn">上传文件</button><input type="number" id="up-width" placeholder="请输入需要的压缩图片宽度" />
+	<div id="after"></div>
+  <div id="copper-result"></div>
+	<button class="clear">取消</button>
+	<button class="sure">确定</button>
 	<script type="text/javascript" src="http://localhost:3001/bundle.js"></script>
 	<script>
-$("#up-img").upLoadImgCompress({
-	postUrl: "http://koa-upload.coding.io",
-	width:320,
-	quality:0.3
-})
+// $("#up-img").upLoadImgCompress({
+// 	postUrl: "http://koa-upload.coding.io",
+// 	width:540,
+// 	quality:0.3
+// })
 	</script>
 </body>
 </html>
