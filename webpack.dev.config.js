@@ -1,6 +1,6 @@
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+// var OpenBrowserPlugin = require('open-browser-webpack-plugin');
 var autoprefixer = require('autoprefixer');
 var __PATH = require('./path.config.js');
 var config = {};
@@ -20,7 +20,7 @@ config.module = {
   }]
 };
 config.plugins = [
-  new webpack.HotModuleReplacementPlugin(), 　　 //webpack热替换插件  
+  new webpack.HotModuleReplacementPlugin(), 　　 //webpack热替换插件
 
   //new HtmlWebpackPlugin(),
   //补全前缀

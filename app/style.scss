@@ -292,3 +292,25 @@
 .cropper-disabled .cropper-point {
   cursor: not-allowed;
 }
+.cropper-container .cropper-bottom-fn-btn{
+  position: absolute;
+  bottom:0;
+  width: 100%;
+}
+.cropper-bottom-fn-btn{
+ span{
+   height: 40px;
+   line-height: 40px;
+   text-align: center;
+   width: 60px;
+   background-color: #fff;
+   color: #000;
+   font-size: 16px;
+ }
+  .cropper-btn-confirm{
+    float: left;
+  }
+  .cropper-btn-cancel{
+    float: right;
+  }
+}
