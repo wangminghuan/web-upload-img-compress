@@ -298,19 +298,43 @@
   width: 100%;
 }
 .cropper-bottom-fn-btn{
- span{
+background-color: #fff;
+text-align: center;
+ span,em{
    height: 40px;
    line-height: 40px;
    text-align: center;
    width: 60px;
-   background-color: #fff;
    color: #000;
-   font-size: 16px;
+ }
+ em{
+   font-size: 18px;
+   font-style: normal;
  }
   .cropper-btn-confirm{
     float: left;
+    font-size: 16px
   }
   .cropper-btn-cancel{
     float: right;
+    font-size: 16px
+  }
+}
+.copper-tips-wrap{
+  position: fixed;
+  left: 0;
+  top:50%;
+  margin-top: -20px;
+  width: 100%;
+  text-align: center;
+  z-index: 999;
+  span{
+    font-size: 12px;
+    line-height: 24px;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 0 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
   }
 }

@@ -13,7 +13,7 @@ import "./style.scss";
 // import lrz from "lrz";
 import dataURLtoBlob from 'blueimp-canvas-to-blob';
 import copper from "./copper";
-
+import showTips from "./showTips";
 // var file=null;
 // $("#btn").click(function(){
 //   lrz(file, {
@@ -50,14 +50,14 @@ import copper from "./copper";
 //     alert("上传成功！")
 //   });
 // })
-window.$.fn.upLoadImgCutCompress = function(obj){
-  var def ={
-    radio:1/1,
-    quality:0.9,
-    finaWidth:200,
-    isShowCut:true,
-    postUrl:'',
-    finalShowSelector:""
+window.$.fn.upLoadImgCutCompress = function(obj) {
+  var def = {
+    radio: 1 / 1,
+    quality: 0.9,
+    finaWidth: 200,
+    isShowCut: true,
+    postUrl: '',
+    finalShowSelector: ""
   }
   for (var key in obj) {
     if (obj[key]) {
@@ -65,106 +65,107 @@ window.$.fn.upLoadImgCutCompress = function(obj){
     }
   }
   if (def.postUrl == "") {
-    console.warn("postUrl is empty!!!")
+    showTips('postUrl不能为空！',false, 800);
+    throw new Error('postUrl不能为空！');
     return false;
   }
 
-$(this).on('change', function() {
-  alert("正在加载！！！")
-  var $this = $(this),
-  randomId="_compress_random_id_AvFxfPq",
-  finaHeight=parseInt(def.finaWidth/(def.radio));
-  if (!$this.val().match(/.jpg|.gif|.png|.bmp/i)) {
-    alert('图片格式无效！');
-    return false;
-  }
-  if (!document.createElement('canvas').getContext) {
-        throw new Error('浏览器不支持canvas');
-        return false;
+  $(this).on('change', function() {
+    var $this = $(this),
+      randomId = "_compress_random_id_AvFxfPq",
+      finaHeight = parseInt(def.finaWidth / (def.radio));
+    if (!$this.val().match(/.jpg|.gif|.png|.bmp/i)) {
+      showTips('图片格式无效！',false, 800);
+      return false;
     }
-  var file = this.files[0];
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var data = e.target.result;
-    var image = new Image();
-    image.src = data;
-    image.id = randomId;
-    image.style.display = "none";
-    image.onload = function() {
-      console.log("原始图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (file.size / 1024).toFixed(2) + "KB")
-      if(def.isShowCut){
-        $this.after(image);
-        $("#"+randomId).cropper({
-          aspectRatio: def.radio,
-          viewMode:1,
-          rotatable:true,
-          minContainerHeight:$(window).height(),
-          ready:function(){
-            alert("加载完毕！！！")
-            $(".cropper-container").append("<div class='cropper-bottom-fn-btn'><span class='cropper-btn-confirm'>确定</span><span class='cropper-btn-cancel'>取消</span></div>")
-            $(".cropper-btn-cancel").click(cancelCropper)
-            $(".cropper-btn-confirm").click(confirmCropper)
-          },
-          crop: function(e) {
-            // Output the result data for cropping image.
-            // console.log(e.x);
-            // console.log(e.y);
-            // console.log(e.width);
-            // console.log(e.height);
-            // console.log(e.rotate);
-            // console.log(e.scaleX);
-            // console.log(e.scaleY);
-          }
-        });
-      }else{
-      var _canvas = document.createElement('canvas'),
-      ctx = _canvas.getContext('2d');
-      ctx.clearRect(0, 0, def.finaWidth, finaHeight);
-      ctx.drawImage(this, 0, 0, def.finaWidth, finaHeight);
-      sendImgFormData(_canvas);
-      alert("正在压缩上传");
-      }
+    if (!document.createElement('canvas').getContext) {
+      throw new Error('浏览器不支持canvas');
+      showTips('您的浏览器不支持canvas',false, 800);
+      return false;
+    }
+    showTips("读取成功，正在加载...");
+    var file = this.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var data = e.target.result;
+      var image = new Image();
+      image.src = data;
+      image.id = randomId;
+      image.style.display = "none";
+      image.onload = function() {
+        console.log("原始图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (file.size / 1024).toFixed(2) + "KB")
+        if (def.isShowCut) {
+          $this.after(image);
+          $("#" + randomId).cropper({
+            aspectRatio: def.radio,
+            viewMode: 1,
+            rotatable: true,
+            minContainerHeight: $(window).height(),
+            ready: function() {
+              showTips("加载完毕！",true);
+              $(".cropper-container").append("<div class='cropper-bottom-fn-btn'><em>裁剪图片</em><span class='cropper-btn-confirm'>确定</span><span class='cropper-btn-cancel'>取消</span></div>")
+              $(".cropper-btn-cancel").click(cancelCropper)
+              $(".cropper-btn-confirm").click(confirmCropper)
+            },
+            crop: function(e) {
+              // Output the result data for cropping image.
+              // console.log(e.x);
+              // console.log(e.y);
+              // console.log(e.width);
+              // console.log(e.height);
+              // console.log(e.rotate);
+              // console.log(e.scaleX);
+              // console.log(e.scaleY);
+            }
+          });
+        } else {
+          var _canvas = document.createElement('canvas'),
+            ctx = _canvas.getContext('2d');
+          ctx.clearRect(0, 0, def.finaWidth, finaHeight);
+          ctx.drawImage(this, 0, 0, def.finaWidth, finaHeight);
+          sendImgFormData(_canvas);
+        }
 
+      };
     };
-  };
-  reader.readAsDataURL(file);
-  //取消裁剪功能
-  function cancelCropper(){
-    $("#"+randomId).cropper('destroy');
-    $("#"+randomId).remove();
-  }
-  //确定裁剪功能
-  function confirmCropper(){
-    var canvas=$("#"+randomId).cropper('getCroppedCanvas',{
-      width:def.finaWidth,
-      height:finaHeight,
-      imageSmoothingQuality:"high"
-    });
-      if(def.finalShowSelector){$(def.finalShowSelector).html(canvas)};
-      $("#"+randomId).cropper('destroy');
-      $("#"+randomId).remove();
+    reader.readAsDataURL(file);
+    //取消裁剪功能
+    function cancelCropper() {
+      $("#" + randomId).cropper('destroy');
+      $("#" + randomId).remove();
+    }
+    //确定裁剪功能
+    function confirmCropper() {
+      var canvas = $("#" + randomId).cropper('getCroppedCanvas', {
+        width: def.finaWidth,
+        height: finaHeight,
+        imageSmoothingQuality: "high"
+      });
+      if (def.finalShowSelector) {
+        $(def.finalShowSelector).html(canvas)
+      };
+      $("#" + randomId).cropper('destroy');
+      $("#" + randomId).remove();
       sendImgFormData(canvas);
-  }
- //发送数据
- function sendImgFormData(canvas){
- var dataURL = canvas.toDataURL('image/jpeg', def.quality);
- var blob = dataURLtoBlob(dataURL);
- console.log("最终上传图片信息：宽高：" + def.finaWidth + "×" + finaHeight + ",大小：" + (blob.size / 1024).toFixed(2) + "KB")
- var fd = new FormData(document.forms[0]);
- fd.append("uploadFile", blob, 'image.png');
-   $.ajax({
-       url: def.postUrl,
-       method: 'POST',
-       processData: false, // 必须
-       contentType: false, // 必须
-       dataType: 'json',
-       data: fd,
-       success(data) {
-           console.log(data);
-       }
-       });
- }
-});
+    }
+    //发送数据
+    function sendImgFormData(canvas) {
+      var dataURL = canvas.toDataURL('image/jpeg', def.quality);
+      var blob = dataURLtoBlob(dataURL);
+      console.log("最终上传图片信息：宽高：" + def.finaWidth + "×" + finaHeight + ",大小：" + (blob.size / 1024).toFixed(2) + "KB")
+      var fd = new FormData(document.forms[0]);
+      fd.append("uploadFile", blob, 'image.png');
+      $.ajax({
+        url: def.postUrl, method: 'POST', processData: false, // 必须
+        contentType: false, // 必须
+        dataType: 'json',
+        data: fd,
+        success(data) {
+          console.log(data);
+        }
+      });
+    }
+  });
 }
 // window.$.fn.upLoadImgCompress = function(obj) {
 //   var def = {
