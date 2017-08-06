@@ -123,11 +123,14 @@
    <div id="copper-result"></div>
 	<script type="text/javascript" src="http://localhost:3001/bundle.js"></script>
 	<script>
-// $("#up-img").upLoadImgCompress({
-// 	postUrl: "http://koa-upload.coding.io",
-// 	width:540,
-// 	quality:0.3
-// })
+$("#up-img").upLoadImgCutCompress({
+	radio:16/9,
+	quality:0.5,
+	finaWidth:100,
+	isShowCut:true,
+	postUrl:'http://localhost:3001/api',
+	finalShowSelector:"#copper-result"
+})
 	</script>
 </body>
 </html>
