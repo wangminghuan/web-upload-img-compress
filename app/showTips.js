@@ -5,7 +5,7 @@ export default function(txt, status, time) {
       $(".copper-tips-wrap").fadeOut(function(){
         $(".copper-tips-wrap").remove()
       })
-    },300)
+    },1000)
   }
   $('body').append("<div class='copper-tips-wrap'><span>"+txt+"</span></div>");
   if(time){

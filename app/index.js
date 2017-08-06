@@ -96,13 +96,13 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
         console.log("原始图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (file.size / 1024).toFixed(2) + "KB")
         if (def.isShowCut) {
           $this.after(image);
+          showTips("加载完毕！",true);
           $("#" + randomId).cropper({
             aspectRatio: def.radio,
             viewMode: 1,
             rotatable: true,
             minContainerHeight: $(window).height(),
             ready: function() {
-              showTips("加载完毕！",true);
               $(".cropper-container").append("<div class='cropper-bottom-fn-btn'><em>裁剪图片</em><span class='cropper-btn-confirm'>确定</span><span class='cropper-btn-cancel'>取消</span></div>")
               $(".cropper-btn-cancel").click(cancelCropper)
               $(".cropper-btn-confirm").click(confirmCropper)
@@ -141,8 +141,11 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
         height: finaHeight,
         imageSmoothingQuality: "high"
       });
-      if (def.finalShowSelector) {
-        $(def.finalShowSelector).html(canvas)
+      if ($(def.finalShowSelector).length) {
+        var $select=$(def.finalShowSelector);
+        //最终放置预览图的节点是img则改变src属性，否则在目标点内部添加canvas结构
+         $select[0].nodeName=="IMG" ? $select.attr("src",canvas.toDataURL('image/jpeg'))
+        :$select.html(canvas)
       };
       $("#" + randomId).cropper('destroy');
       $("#" + randomId).remove();

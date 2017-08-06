@@ -103,13 +103,12 @@
 		width: 200px;
 		background-color: red
 	}
-	.clear,.sure{
-		position: absolute;
-	   bottom: 20px;
-	}
-	.sure{
-		right: 0
-	}
+  .copper-btn{
+  	width: 100px;
+		height: auto;
+		margin:0 auto;
+		display: block;
+  }
 	</style>
 	<script type="text/javascript">
 !function(e,t){function n(){var t=o.getBoundingClientRect().width/10;o.style.fontSize=t+"px",d.rem=e.rem=t}var i=null,r=e.document,o=r.documentElement,a=0,d=t.flexible||(t.flexible={}),s=e.navigator.appVersion.match(/iphone/gi),m=e.navigator.appVersion.match(/UCBrowser/gi),p=e.devicePixelRatio;a=s?p>=3&&(!a||a>=3)?3:p>=2&&(!a||a>=2)?2:1:1,o.setAttribute("data-dpr",a),"complete"===r.readyState?r.body.style.fontSize="12px":r.addEventListener("DOMContentLoaded",function(){r.body.style.fontSize="12px"},!1);var c="onorientationchange"in window?"orientationchange":"resize";if(e.addEventListener(c,function(){clearTimeout(i),i=setTimeout(n(),300)},!1),e.addEventListener("pageshow",function(t){e.persisted&&(clearTimeout(i),i=setTimeout(n(),300))},!1),n(),d.dpr=e.dpr=a,d.refreshRem=n,d.rem2px=function(e){var t=parseFloat(e)*this.rem;return"string"==typeof e&&e.match(/rem$/)&&(t+="px"),t},d.px2rem=function(e){var t=parseFloat(e)/this.rem;return"string"==typeof e&&e.match(/px$/)&&(t+="rem"),t},s&&!m){var l="notHairlines",u=navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);parseInt(u[1],10)>=8&&(l="hairlines"),document.documentElement.classList.add(l)}}(window,window.lib||(window.lib={}));
@@ -117,19 +116,23 @@
 	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
-	<input id="up-img" type="file" accept="image/png,image/jpeg,image/gif" />
-	<div id="before"></div>
-	<button id="btn">上传文件</button><input type="number" id="up-width" placeholder="请输入需要的压缩图片宽度" />
-   <div id="copper-result"></div>
+	<div class="up-load-control">
+		<img src="./app/camera.jpg" class="copper-btn" />
+		<input style="display:none" id="up-img" type="file" accept="image/png,image/jpeg,image/gif" />
+	</div>
+	<div class="copper-info"></div>
 	<script type="text/javascript" src="http://localhost:3001/bundle.js"></script>
 	<script>
 $("#up-img").upLoadImgCutCompress({
-	radio:16/9,
+	radio:1/1,
 	quality:0.5,
 	finaWidth:100,
 	isShowCut:true,
 	postUrl:'http://localhost:3001/api',
-	finalShowSelector:"#copper-result"
+	finalShowSelector:".copper-btn"
+})
+$(".copper-btn").click(function(){
+	$("#up-img").trigger("click")
 })
 	</script>
 </body>
