@@ -8,7 +8,8 @@
 	*{margin:0;padding: 0}
 	.up-load-control{
 		width: 100%;
-		border: 2px dashed #eee
+		border: 2px dashed #eee;
+		box-sizing: border-box;
 	}
 	.copper-btn{
 		width: 100px;
@@ -29,8 +30,8 @@
 $("#up-img").upLoadImgCutCompress({
 	radio:1/1,
 	quality:0.9,
+	isShowCut:false,
 	finalWidth:100,
-	isShowCut:true,
 	postUrl:'http://koa-upload.coding.io',
 	finalShowSelector:".copper-btn",
 	callback:function(origin, final){
