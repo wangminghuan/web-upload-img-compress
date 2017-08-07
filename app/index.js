@@ -16,7 +16,7 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
   var def = {
     radio: 1/1,
     quality: 0.9,
-    finalWidth: 200,
+    finalWidth: 0,
     isShowCut: true,
     postUrl: '',
     finalShowSelector: "",
@@ -63,7 +63,6 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
           height: image.height,
           size: file.size
         };
-      //  var  finalHeight= def.isShowCut? parseInt(def.finalWidth / (def.radio)): parseInt(def.finalWidth / (image.width/image.height));
         if (def.isShowCut) {
           finalHeight = parseInt(def.finalWidth / (def.radio));
           //添加一个隐藏节点
