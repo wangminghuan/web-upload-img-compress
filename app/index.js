@@ -27,11 +27,14 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
       def[key] = obj[key]
     }
   }
+
   if (def.postUrl == "") {
     showTips('postUrl不能为空！', false, 800);
     throw new Error('postUrl不能为空！');
     return false;
   }
+  //是否限制了上传图片的宽度
+  var isLimitWidth=def.finalWidth==0?false:true;
   $(this).on('change', function() {
     var $this = $(this),
       randomId = "_compress_random_id_AvFxfPq";
@@ -52,7 +55,7 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
     var reader = new FileReader();
     reader.onload = function(e) {
       var data = e.target.result;
-      var image = new Image(),finalHeight=0;
+      var image = new Image();
       image.src = data;
       image.id = randomId;
       image.style.display = "none";
@@ -64,7 +67,6 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
           size: file.size
         };
         if (def.isShowCut) {
-          finalHeight = parseInt(def.finalWidth / (def.radio));
           //添加一个隐藏节点
           $this.after(image);
           showTips("加载完毕！", true);
@@ -76,9 +78,11 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
             ready: function() {
               $(".cropper-container").append("<div class='cropper-bottom-fn-btn'><em>裁剪图片</em><span class='cropper-btn-confirm'>确定</span><span class='cropper-btn-cancel'>取消</span></div>")
               $(".cropper-btn-cancel").click(cancelCropper)
-              $(".cropper-btn-confirm").click(function(){confirmCropper(finalHeight)})
+              $(".cropper-btn-confirm").click(function(){confirmCropper()})
             },
             crop: function(e) {
+              //宽度不填写时候，默认获取他的截取宽度
+              if(!isLimitWidth)def.finalWidth=e.width;
               // Output the result data for cropping image.
               // console.log(e.x);
               // console.log(e.y);
@@ -90,8 +94,10 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
             }
           });
         } else {
+          //不需要裁剪的情况下，如果宽度参数不设置，则设置默认参数200
+         if(!isLimitWidth)def.finalWidth=200;
           var _canvas = document.createElement('canvas');
-          finalHeight = parseInt(def.finalWidth / (image.width/image.height));
+          var finalHeight = parseInt(def.finalWidth / (image.width/image.height));
           _canvas.width=def.finalWidth;
           _canvas.height=finalHeight;
           var ctx = _canvas.getContext('2d');
@@ -111,7 +117,8 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
       $("#" + randomId).remove();
     }
     //确定裁剪功能
-    function confirmCropper(finalHeight) {
+    function confirmCropper() {
+      var finalHeight = parseInt(def.finalWidth/ (def.radio));
       var canvas = $("#" + randomId).cropper('getCroppedCanvas', {
         width: def.finalWidth,
         height: finalHeight,
