@@ -3,116 +3,19 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width">
-	<title>webpack-poject</title>
+	<title>upLoadImgCutCompress-demo</title>
 	<style>
-
-	html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6 {
-	  margin: 0;
-	  padding: 0;
+	*{margin:0;padding: 0}
+	.up-load-control{
+		width: 100%;
+		border: 2px dashed #eee
 	}
-
-	h1,h2,h3,h4,h5,h6 {
-	  font-size: 100%;
-	  font-weight: normal;
-	}
-	html {
-	  box-sizing: border-box;
-	}
-	*{
-	  -webkit-user-select: none;
-	  -webkit-touch-callout: none;
-	  -webkit-tap-highlight-color: transparent;
-	  -webkit-overflow-scrolling: touch;
-	}
-	*, *:before, *:after {
-	  box-sizing: inherit;
-	}
-	body {
-	    -webkit-text-size-adjust:none;
-	    font-family:"微软雅黑", Arial, Helvetica, sans-serif;
-	    color:#333;
-	    font-size:14px;
-	    display:-webkit-box;
-	    -webkit-box-orient:vertical;
-	    -webkit-box-align:stretch;
-	    background-color:#fff
-	}
-
-	section, nav, article, aside, hgroup, header, footer {
-	    display:block
-	}
-	/* 清除iphone 内核样式 */
-	input[type="submit"],
-	input[type="reset"],
-	input[type="button"],
-	button {
-	 -webkit-appearance: none;
-	 border-radius: 0;
-	}
-	input, textarea, select, button, table {
-	    font-size:inherit;
-	    font-family:inherit;
-	    line-height:inherit;
-	    margin: 0;
-	    border: 0;
-	    box-sizing: border-box;
-	}
-	table {
-	  border-collapse: collapse;
-	  border-spacing: 0;
-	}
-	td,th {
-	  padding: 0;
-	  text-align: left;
-	}
-	img, fieldset {
-	    border:0
-	}
-	ul, ol {
-	    list-style:none
-	}
-	i, em, address {
-	    font-style:normal
-	}
-	a {
-	    color:inherit;
-	    text-decoration:none
-	}
-	hr,legend{
-	    display:none
-	}
-	img,embed,object,audio,video {
-	  height: auto;
-	  max-width: 100%;
-	}
-	iframe {
-	    width:0;
-	    height:0;
-	    line-height:0;
-	    overflow:hidden;
-	    display: none;
-	}
-  #btn{
-  	height:24px;
-		width: 70px;
-		background-color: #eee;
-		margin-top: 10px;
-  }
-	#stage{
-		height: 200px;
-		width: 200px;
-		background-color: red
-	}
-  .copper-btn{
-  	width: 100px;
-		height: auto;
-		margin:0 auto;
+	.copper-btn{
+		width: 100px;
 		display: block;
-  }
+		margin: 20px auto;
+	}
 	</style>
-	<script type="text/javascript">
-!function(e,t){function n(){var t=o.getBoundingClientRect().width/10;o.style.fontSize=t+"px",d.rem=e.rem=t}var i=null,r=e.document,o=r.documentElement,a=0,d=t.flexible||(t.flexible={}),s=e.navigator.appVersion.match(/iphone/gi),m=e.navigator.appVersion.match(/UCBrowser/gi),p=e.devicePixelRatio;a=s?p>=3&&(!a||a>=3)?3:p>=2&&(!a||a>=2)?2:1:1,o.setAttribute("data-dpr",a),"complete"===r.readyState?r.body.style.fontSize="12px":r.addEventListener("DOMContentLoaded",function(){r.body.style.fontSize="12px"},!1);var c="onorientationchange"in window?"orientationchange":"resize";if(e.addEventListener(c,function(){clearTimeout(i),i=setTimeout(n(),300)},!1),e.addEventListener("pageshow",function(t){e.persisted&&(clearTimeout(i),i=setTimeout(n(),300))},!1),n(),d.dpr=e.dpr=a,d.refreshRem=n,d.rem2px=function(e){var t=parseFloat(e)*this.rem;return"string"==typeof e&&e.match(/rem$/)&&(t+="px"),t},d.px2rem=function(e){var t=parseFloat(e)/this.rem;return"string"==typeof e&&e.match(/px$/)&&(t+="rem"),t},s&&!m){var l="notHairlines",u=navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);parseInt(u[1],10)>=8&&(l="hairlines"),document.documentElement.classList.add(l)}}(window,window.lib||(window.lib={}));
-	</script>
 	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
@@ -125,11 +28,17 @@
 	<script>
 $("#up-img").upLoadImgCutCompress({
 	radio:1/1,
-	quality:0.5,
-	finaWidth:100,
+	quality:0.9,
+	finalWidth:100,
 	isShowCut:true,
-	postUrl:'http://localhost:3001/api',
-	finalShowSelector:".copper-btn"
+	postUrl:'http://koa-upload.coding.io',
+	finalShowSelector:".copper-btn",
+	callback:function(origin, final){
+		// console.log(origin,final);
+		var _html="<p>原始图片信息：宽高：" + origin.width + "×" + origin.height + ",大小：" + (origin.size / 1024).toFixed(2) + "KB</p>";
+		_html+="<p>上传图片信息：宽高：" + final.width + "×" + final.height + ",大小：" + (final.size / 1024).toFixed(2) + "KB</p>";
+		$(".copper-info").html(_html)
+	}
 })
 $(".copper-btn").click(function(){
 	$("#up-img").trigger("click")

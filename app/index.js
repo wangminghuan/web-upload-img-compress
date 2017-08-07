@@ -1,5 +1,3 @@
-// import "./common/css/reset.scss";
-// import header from "./modules/header";
 /******** 原理：
  input的type=files得到图片文件:
 1. H5的FileReader接口读取文件数据，得到图片的base64数据
@@ -10,93 +8,67 @@
 ps： File 接口基于Blob，继承 blob功能并将其扩展为支持用户系统上的文件
 *******/
 import "./style.scss";
-// import lrz from "lrz";
 import dataURLtoBlob from 'blueimp-canvas-to-blob';
 import copper from "./copper";
 import showTips from "./showTips";
-// var file=null;
-// $("#btn").click(function(){
-//   lrz(file, {
-//     width: parseInt($("#up-width").val())||320,
-//     def.quality: 0.5
-//   }).then(function(rst) {
-//     $.ajax({
-//       url: "http://koa-upload.coding.io", // 这个地址做了跨域处理，可以用于实际调试
-//       data: rst.formData,
-//       processData: false,
-//       contentType: false,
-//       type: 'POST',
-//       success: function(data) {
-//         console.log("send data success")
-//       },
-//       error: function() {
-//         console.error("send data failed!!")
-//       }
-//     })
-//     var image = new Image();
-//     image.src = rst.base64;
-//     image.onload = function() {
-//       console.log("压缩后图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (rst.fileLen / 1024).toFixed(2) + "KB")
-//       $("#after").append("<p>压缩后图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (rst.fileLen / 1024).toFixed(2) + "KB</p>");
-//       $("#after").append(image);
-//     }
-//     // $this.after(image)
-//   }).catch(function(err) {
-//     // 万一出错了，这里可以捕捉到错误信息
-//     // 而且以上的then都不会执行
-//     alert(err);
-//   }).always(function() {
-//     //预留接口
-//     alert("上传成功！")
-//   });
-// })
+import FormDataShim from "./formDataShim";
 window.$.fn.upLoadImgCutCompress = function(obj) {
   var def = {
-    radio: 1 / 1,
+    radio: 1/1,
     quality: 0.9,
-    finaWidth: 200,
+    finalWidth: 200,
     isShowCut: true,
     postUrl: '',
-    finalShowSelector: ""
+    finalShowSelector: "",
+    callback: function() {}
   }
   for (var key in obj) {
-    if (obj[key]) {
+    if (typeof obj[key] !== "undefined") {
       def[key] = obj[key]
     }
   }
   if (def.postUrl == "") {
-    showTips('postUrl不能为空！',false, 800);
+    showTips('postUrl不能为空！', false, 800);
     throw new Error('postUrl不能为空！');
     return false;
   }
-
   $(this).on('change', function() {
     var $this = $(this),
-      randomId = "_compress_random_id_AvFxfPq",
-      finaHeight = parseInt(def.finaWidth / (def.radio));
+      randomId = "_compress_random_id_AvFxfPq";
     if (!$this.val().match(/.jpg|.gif|.png|.bmp/i)) {
-      showTips('图片格式无效！',false, 800);
+      showTips('图片格式无效！', false, 800);
       return false;
     }
     if (!document.createElement('canvas').getContext) {
       throw new Error('浏览器不支持canvas');
-      showTips('您的浏览器不支持canvas',false, 800);
+      showTips('您的浏览器不支持canvas', false, 800);
       return false;
     }
+    //callback参数对象
+    var originArr = {},
+      finalArr = {};
     showTips("读取成功，正在加载...");
     var file = this.files[0];
     var reader = new FileReader();
     reader.onload = function(e) {
       var data = e.target.result;
-      var image = new Image();
+      var image = new Image(),finalHeight=0;
       image.src = data;
       image.id = randomId;
       image.style.display = "none";
       image.onload = function() {
         console.log("原始图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (file.size / 1024).toFixed(2) + "KB")
+        originArr = {
+          width: image.width,
+          height: image.height,
+          size: file.size
+        };
+      //  var  finalHeight= def.isShowCut? parseInt(def.finalWidth / (def.radio)): parseInt(def.finalWidth / (image.width/image.height));
         if (def.isShowCut) {
+          finalHeight = parseInt(def.finalWidth / (def.radio));
+          //添加一个隐藏节点
           $this.after(image);
-          showTips("加载完毕！",true);
+          showTips("加载完毕！", true);
           $("#" + randomId).cropper({
             aspectRatio: def.radio,
             viewMode: 1,
@@ -105,7 +77,7 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
             ready: function() {
               $(".cropper-container").append("<div class='cropper-bottom-fn-btn'><em>裁剪图片</em><span class='cropper-btn-confirm'>确定</span><span class='cropper-btn-cancel'>取消</span></div>")
               $(".cropper-btn-cancel").click(cancelCropper)
-              $(".cropper-btn-confirm").click(confirmCropper)
+              $(".cropper-btn-confirm").click(function(){confirmCropper(finalHeight)})
             },
             crop: function(e) {
               // Output the result data for cropping image.
@@ -119,11 +91,16 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
             }
           });
         } else {
-          var _canvas = document.createElement('canvas'),
-            ctx = _canvas.getContext('2d');
-          ctx.clearRect(0, 0, def.finaWidth, finaHeight);
-          ctx.drawImage(this, 0, 0, def.finaWidth, finaHeight);
-          sendImgFormData(_canvas);
+          var _canvas = document.createElement('canvas');
+          finalHeight = parseInt(def.finalWidth / (image.width/image.height));
+          _canvas.width=def.finalWidth;
+          _canvas.height=finalHeight;
+          var ctx = _canvas.getContext('2d');
+          ctx.clearRect(0, 0, def.finalWidth, finalHeight);
+          ctx.drawImage(this, 0, 0, def.finalWidth, finalHeight);
+          sendAjaxFormData(_canvas, finalHeight);
+          showFinalImg($(def.finalShowSelector), _canvas);
+          showTips("上传完毕！", true);
         }
 
       };
@@ -135,28 +112,39 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
       $("#" + randomId).remove();
     }
     //确定裁剪功能
-    function confirmCropper() {
+    function confirmCropper(finalHeight) {
       var canvas = $("#" + randomId).cropper('getCroppedCanvas', {
-        width: def.finaWidth,
-        height: finaHeight,
+        width: def.finalWidth,
+        height: finalHeight,
         imageSmoothingQuality: "high"
       });
-      if ($(def.finalShowSelector).length) {
-        var $select=$(def.finalShowSelector);
-        //最终放置预览图的节点是img则改变src属性，否则在目标点内部添加canvas结构
-         $select[0].nodeName=="IMG" ? $select.attr("src",canvas.toDataURL('image/jpeg'))
-        :$select.html(canvas)
-      };
+      showFinalImg($(def.finalShowSelector),canvas);
       $("#" + randomId).cropper('destroy');
       $("#" + randomId).remove();
-      sendImgFormData(canvas);
+      sendAjaxFormData(canvas,finalHeight);
     }
+    //回传页面展示图片
+    function showFinalImg($select,canvas){
+    if ($select.length) {
+      //最终放置预览图的节点是img则改变src属性，否则在目标点内部添加canvas结构
+      $select[0].nodeName == "IMG"
+        ? $select.attr("src", canvas.toDataURL('image/jpeg'))
+        : $select.html(canvas)
+    };
+  }
     //发送数据
-    function sendImgFormData(canvas) {
+    function sendAjaxFormData(canvas,height) {
       var dataURL = canvas.toDataURL('image/jpeg', def.quality);
       var blob = dataURLtoBlob(dataURL);
-      console.log("最终上传图片信息：宽高：" + def.finaWidth + "×" + finaHeight + ",大小：" + (blob.size / 1024).toFixed(2) + "KB")
-      var fd = new FormData(document.forms[0]);
+      console.log("最终上传图片信息：宽高：" + def.finalWidth + "×" + height + ",大小：" + (blob.size / 1024).toFixed(2) + "KB")
+      finalArr = {
+        width: def.finalWidth,
+        height: height,
+        size: blob.size
+      };
+      //执行回调，图片压缩前后数据作为参数回传
+      def.callback(originArr, finalArr);
+      var fd = new FormDataShim();
       fd.append("uploadFile", blob, 'image.png');
       $.ajax({
         url: def.postUrl, method: 'POST', processData: false, // 必须
@@ -170,42 +158,3 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
     }
   });
 }
-// window.$.fn.upLoadImgCompress = function(obj) {
-//   var def = {
-//     width: 375,
-//     def.quality: 0.7,
-//     postUrl: ""
-//   }
-//   for (var key in obj) {
-//     if (obj[key]) {
-//       def[key] = obj[key]
-//     }
-//   }
-//   if (def.postUrl == "") {
-//     console.warn("postUrl is empty!!!")
-//     return false;
-//   }
-//   $(this).on('change', function() {
-//     var $this = $(this);
-//     if (!$this.val().match(/.jpg|.gif|.png|.bmp/i)) {
-//       alert('图片格式无效！');
-//       return false;
-//     }
-//     file = this.files[0];
-//     console.log(file);
-//     var reader = new FileReader();
-//     reader.onload = function(e) {
-//       var data = e.target.result;
-//       //加载图片获取图片真实宽度和高度
-//       var image = new Image();
-//       image.src = data;
-//       image.onload = function() {
-//         console.log("原始图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (file.size / 1024).toFixed(2) + "KB")
-//         $("#before").append("<p>原始图片信息：宽高：" + image.width + "×" + image.height + ",大小：" + (file.size / 1024).toFixed(2) + "KB</p>");
-//         $("#before").append(image);
-//       };
-//     };
-//     reader.readAsDataURL(file);
-//
-//   });
-// }
