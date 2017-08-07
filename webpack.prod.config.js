@@ -14,17 +14,19 @@ config.entry = [ //利用中间件实现热更新，reload=true配置如果热�
 //     'react-dom': 'ReactDOM'
 // };
 config.module = {
-  loaders: [{
+  loaders: [
+    {
     test: /\.scss$/,
     include: __PATH.APP,
     exclude: /node_modules/,
-    // loader: "style-loader!css-loader?minimize!postcss-loader!sass-loader"
-    loader: ExtractTextPlugin.extract({
-      //如果不需要单独提取css，注销此处配置，沿用上面配置
-      fallback: "style-loader",
-      use: ["css-loader?minimize", "postcss-loader", "sass-loader"]
-    })
-  }]
+    loader: "style-loader!css-loader?minimize!postcss-loader!sass-loader"
+    // loader: ExtractTextPlugin.extract({
+    //   //如果不需要单独提取css，注销此处配置，沿用上面配置
+    //   fallback: "style-loader",
+    //   use: ["css-loader?minimize", "postcss-loader", "sass-loader"]
+    // })
+  }
+]
 };
 config.plugins = [
 
