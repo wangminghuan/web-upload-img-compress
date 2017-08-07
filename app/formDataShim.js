@@ -1,5 +1,6 @@
 // Android上的AppleWebKit 534以前的内核存在一个Bug，
 // 导致FormData加入一个Blob对象后，上传的文件是0字节
+//代码来源https://github.com/think2011/localResizeIMG/blob/master/src/lib/Blob.FormData.shim.js
 function hasFormDataBug () {
     var bCheck = ~navigator.userAgent.indexOf('Android')
         && ~navigator.vendor.indexOf('Google')
