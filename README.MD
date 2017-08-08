@@ -62,7 +62,15 @@ js代码
 		$("#btn-id").click(function(){
 			$("#up-img").trigger("click")
 		})
-
+2. 前端压缩裁剪图片思路
+	- input的type=files得到图片文件:
+	- H5的FileReader接口读取文件数据，得到图片的base64数据
+	- 将得到的base64添加到img标签的src中,并添加到DOM中;
+	- 利用copper组件对img标签进行指定比例裁剪(canvas实现)，再按照指定尺寸输出canvas对象;
+	- 将canvas对象转化为base64数据
+	- 用得到的最终base64数据创建Blob对象和formaData对象，提交给后端;
+	
+3. File 接口基于Blob，继承 blob功能并将其扩展为支持用户系统上的文件
 ### 8 参考资料
 1. [copper-A simple jQuery image cropping plugin](https://github.com/fengyuanchen/cropper)
 2. [localResizeIMG](https://github.com/think2011/localResizeIMG)
