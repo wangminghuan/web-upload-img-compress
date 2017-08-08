@@ -73,7 +73,6 @@ window.$.fn.upLoadImgCutCompress = function(obj) {
           $("#" + randomId).cropper({
             aspectRatio: def.radio,
             viewMode: 1,
-            rotatable: true,
             minContainerHeight: $(window).height(),
             ready: function() {
               $(".cropper-container").append("<div class='cropper-bottom-fn-btn'><em>裁剪图片</em><span class='cropper-btn-confirm'>确定</span><span class='cropper-btn-cancel'>取消</span></div>")
